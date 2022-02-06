@@ -22,62 +22,62 @@ const int M = 2*N;
 const int mod = 1e9+7;
 
 
-bool winState(string& board){
+bool winState(string& grid){
     bool row =
-    (board[0] != '.' && board[0] == board[1] && board[1] == board[2]) ||
-    (board[3] != '.' && board[3] == board[4] && board[4] == board[5]) ||
-    (board[6] != '.' && board[6] == board[7] && board[7] == board[8]);
+    (grid[0] != '.' && grid[0] == grid[1] && grid[1] == grid[2]) ||
+    (grid[3] != '.' && grid[3] == grid[4] && grid[4] == grid[5]) ||
+    (grid[6] != '.' && grid[6] == grid[7] && grid[7] == grid[8]);
 
     bool col =
-    (board[0] != '.' && board[0] == board[3] && board[3] == board[6]) ||
-    (board[1] != '.' && board[1] == board[4] && board[4] == board[7]) ||
-    (board[2] != '.' && board[2] == board[5] && board[5] == board[8]);
+    (grid[0] != '.' && grid[0] == grid[3] && grid[3] == grid[6]) ||
+    (grid[1] != '.' && grid[1] == grid[4] && grid[4] == grid[7]) ||
+    (grid[2] != '.' && grid[2] == grid[5] && grid[5] == grid[8]);
 
     bool dia =
-    (board[0] != '.' && board[0] == board[4] && board[4] == board[8]) ||
-    (board[2] != '.' && board[2] == board[4] && board[4] == board[6]);
+    (grid[0] != '.' && grid[0] == grid[4] && grid[4] == grid[8]) ||
+    (grid[2] != '.' && grid[2] == grid[4] && grid[4] == grid[6]);
 
     return row || col || dia;
 }
 
-void bfs(string& board){
-    queue<pair<string, bool>> states;
-    //1->X & 0->O
-    states.push({".........", 1});
-    while(states.size()){
-        string currState = states.front().F;
-        bool player = states.front().S;
-        states.pop();
-        if(currState == board){
-            cout<<"yes\n";
-            return;
-        }else if(winState(currState)){
-            continue;
-        }else{
+bool bfs(string targetGrid){
+    string startGrid = ".........";
+    queue<string> gridStates;
+    gridStates.push(startGrid);
+    //1 -> X && 0 -> O
+    bool xTurn = 1;
+    while(gridStates.size()){
+        int sz = gridStates.size();
+        char play = xTurn ? 'X':'O';
+        while(sz--){
+            string currGrid = gridStates.front();
+            gridStates.pop();
+            if(currGrid == targetGrid) return true;
+            if(winState(currGrid)) continue;
             for(int i=0;i<9;i++){
-                if(currState[i]=='.'){
-                    currState[i] = (player) ? 'X':'O';
-                    if(currState[i] == board[i]) states.push({currState, player^1});
-                    currState[i] = '.';
+                if(currGrid[i] == '.' && targetGrid[i] != '.' && targetGrid[i] == play){
+                    currGrid[i] = play;
+                    gridStates.push(currGrid);
+                    currGrid[i] = '.';
                 }
             }
         }
+        xTurn ^= 1;
     }
-    cout<<"no\n";
+    return false;
 }
 
 int main(){
     fastInputOutput();
     int t;cin>>t;
     while(t--){
-        string board = "";
+        string grid = "";
         for(int i=0;i<3;i++){
             string row;cin>>row;
-            board+=row;
+            grid+=row;
         }
-        bfs(board);
+        string ans = bfs(grid) ? "yes":"no";
+        cout<<ans<<endl;
     }
-
-
     return 0;
 }
