@@ -55,7 +55,7 @@ bool bfs(string targetGrid){
             if(currGrid == targetGrid) return true;
             if(winState(currGrid)) continue;
             for(int i=0;i<9;i++){
-                if(currGrid[i] == '.' && targetGrid[i] != '.' && targetGrid[i] == play){
+                if(currGrid[i] == '.' && targetGrid[i] == play){
                     currGrid[i] = play;
                     gridStates.push(currGrid);
                     currGrid[i] = '.';
